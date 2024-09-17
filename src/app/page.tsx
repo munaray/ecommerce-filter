@@ -9,7 +9,7 @@ import { cn } from "@/lib/utils";
 import { dataTagSymbol, useQuery } from "@tanstack/react-query";
 import { QueryResult } from "@upstash/vector";
 import { ChevronDown, Filter } from "lucide-react";
-import { useState } from "react";
+import { useCallback, useEffect, useState } from "react";
 import axios from "axios";
 import { ProductProps } from "@/db";
 import Product from "@/components/Products/Product";
@@ -23,6 +23,7 @@ import {
 } from "@/components/ui/accordion";
 import { ProductState } from "@/lib/validators/product-validator";
 import { Slider } from "@/components/ui/slider";
+import debounce from "lodash.debounce";
 
 const SORT_OPTIONS = [
 	{ name: "none", value: "none" },
@@ -100,6 +101,9 @@ export default function Home() {
 
 	const onSubmit = () => refetch();
 
+	const debouncedSubmit = debounce(onSubmit, 400);
+	const _debouncedSubmit = useCallback(debouncedSubmit, []);
+
 	const applyArrayFilter = ({
 		category,
 		value,
@@ -121,7 +125,7 @@ export default function Home() {
 			}));
 		}
 
-		onSubmit();
+		_debouncedSubmit();
 	};
 
 	const minPrice = Math.min(filter.price.range[0], filter.price.range[1]);
@@ -158,6 +162,8 @@ export default function Home() {
 											...prev,
 											sort: option.value,
 										}));
+
+										_debouncedSubmit();
 									}}>
 									{option.name}
 								</button>
@@ -271,7 +277,7 @@ export default function Home() {
 							</AccordionItem>
 
 							{/* PRICE FILTER */}
-							<AccordionItem value="size">
+							<AccordionItem value="price">
 								<AccordionTrigger className="py-3 text-sm text-gray-400 hover:text-gray-500">
 									<span className="font-medium text-gray-900">
 										Price
@@ -299,6 +305,7 @@ export default function Home() {
 																	},
 																})
 															);
+															_debouncedSubmit();
 														}}
 														checked={
 															!filter.price
@@ -335,6 +342,7 @@ export default function Home() {
 																range: [0, 100],
 															},
 														}));
+														_debouncedSubmit();
 													}}
 													checked={
 														filter.price.isCustom
@@ -391,6 +399,8 @@ export default function Home() {
 															],
 														},
 													}));
+
+													debouncedSubmit();
 												}}
 												value={
 													filter.price.isCustom
