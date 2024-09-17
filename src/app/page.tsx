@@ -79,7 +79,7 @@ export default function Home() {
 		sort: "none",
 	});
 
-	const { data: products } = useQuery({
+	const { data: products, refetch } = useQuery({
 		queryKey: ["products"],
 		queryFn: async () => {
 			const { data } = await axios.post<QueryResult<ProductProps>[]>(
@@ -87,6 +87,9 @@ export default function Home() {
 				{
 					filter: {
 						sort: filter.sort,
+						color: filter.color,
+						price: filter.price.range,
+						size: filter.size,
 					},
 				}
 			);
@@ -94,6 +97,8 @@ export default function Home() {
 			return data;
 		},
 	});
+
+	const onSubmit = () => refetch();
 
 	const applyArrayFilter = ({
 		category,
@@ -115,6 +120,8 @@ export default function Home() {
 				[category]: [...prev[category], value],
 			}));
 		}
+
+		onSubmit();
 	};
 
 	const minPrice = Math.min(filter.price.range[0], filter.price.range[1]);
