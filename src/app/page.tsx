@@ -24,8 +24,6 @@ import {
 import { ProductState } from "@/lib/validators/product-validator";
 import { Slider } from "@/components/ui/slider";
 import debounce from "lodash.debounce";
-import * as dotenv from "dotenv";
-dotenv.config();
 
 const SORT_OPTIONS = [
 	{ name: "none", value: "none" },
@@ -86,7 +84,7 @@ export default function Home() {
 		queryKey: ["products"],
 		queryFn: async () => {
 			const { data } = await axios.post<QueryResult<ProductProps>[]>(
-				`${process.env.CLIENT_URL}/api/products`,
+				`${process.env.NEXT_PUBLIC_API_URL}/api/products`,
 				{
 					filter: {
 						sort: filter.sort,
