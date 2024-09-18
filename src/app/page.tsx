@@ -102,7 +102,9 @@ export default function Home() {
 	const onSubmit = () => refetch();
 
 	const debouncedSubmit = debounce(onSubmit, 400);
-	const _debouncedSubmit = useCallback(debouncedSubmit, []);
+	const _debouncedSubmit = useCallback(() => {
+		debouncedSubmit();
+	}, []);
 
 	const applyArrayFilter = ({
 		category,
@@ -400,7 +402,7 @@ export default function Home() {
 														},
 													}));
 
-													debouncedSubmit();
+													_debouncedSubmit();
 												}}
 												value={
 													filter.price.isCustom
@@ -427,7 +429,10 @@ export default function Home() {
 							<EmptyState />
 						) : products ? (
 							products.map((product) => (
-								<Product product={product.metadata!} />
+								<Product
+									product={product.metadata!}
+									key={product.id}
+								/>
 							))
 						) : (
 							new Array(12)

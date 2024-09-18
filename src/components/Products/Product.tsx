@@ -1,12 +1,16 @@
 import { ProductProps } from "@/db";
+import Image from "next/image";
 
 const Product = ({ product }: { product: ProductProps }) => {
 	return (
 		<section className="group relative">
 			<figure className="aspect-square w-full overflow-hidden rounded-md bg-gray-200 lg:aspect-none group-hover:opacity-75 lg:h-80">
-				<img
+				<Image
 					src={product.imageId}
 					alt="product image"
+					height={2048}
+					width={2048}
+					priority={false}
 					className="h-full w-full object-cover object-center"
 				/>
 			</figure>
